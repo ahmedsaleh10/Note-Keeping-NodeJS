@@ -10,7 +10,6 @@ app.get('/notes', async (req, res) => {
     try {
       const notes = await Note.find();
       res.json(notes);
-      console.log(notes)
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
