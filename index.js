@@ -1,39 +1,41 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const connectDB = require('./database/connection')
-const {Note,noteSchema} = require('./database/noteModel')
+const {Note} = require('./database/noteModel')
 
 connectDB()
 app.use(express.json())
+app.use(cors())
 
-app.get('/notes', async (req, res) => {
+app.get('/todos', async (req, res) => {
     try {
-      const notes = await Note.find();
-      res.json(notes);
+        const notes = await Note.find();
+        res.json(notes);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
   
   // POST a new note
-  app.post('/notes', async (req, res) => {
+  app.post('/todos', async (req, res) => {
     try {
-      const { title, content } = req.body;
-      const newNote = new Note({ title, content });
-      await newNote.save();
+      const { text, day , finished } =  req.body;
+      const newNote = await Note.create({ text, day , finished });
       res.status(201).json(newNote);
     } catch (error) {
       console.error('Error adding note:', error);
-      res.status(400).json({ error: 'Bad Request' });
+      res.status(400).json(error);
     }
   });
   
   // DELETE a note by ID
-  app.delete('/notes/:id', async (req, res) => {
+  app.delete('/todos/:id', async (req, res) => {
     try {
       const deletedNote = await Note.findByIdAndDelete(req.params.id);
       if (deletedNote) {
         res.json(deletedNote);
+        res.status(200)
       } else {
         res.status(404).json({ error: 'Note not found' });
       }
@@ -43,10 +45,10 @@ app.get('/notes', async (req, res) => {
   });
   
   // PUT (update) a note by ID
-  app.put('/notes/:id', async (req, res) => {
+  app.put('/todos/:id', async (req, res) => {
     try {
-      const { title, content } = req.body;
-      const updatedNote = await Note.findByIdAndUpdate(req.params.id, {title,content}, {
+      const { text, day , finished } =  req.body;
+      const updatedNote = await Note.findByIdAndUpdate(req.params.id, {text, day, finished }, {
         new: true,
       });
       if (updatedNote) {
@@ -59,11 +61,11 @@ app.get('/notes', async (req, res) => {
     }
   });
 
-  app.get('/notes/search', async (req, res) => {
+  app.get('/todos/search', async (req, res) => {
     const query = req.query.query;
     try {
       const searchResults = await Note.find({
-        $or: [{ title: query }, { content: query }],
+        $or: [{ text: query }, { day: query }, { finished: query }],
       });
       res.json(searchResults);
     } catch (error) {
@@ -71,7 +73,7 @@ app.get('/notes', async (req, res) => {
     }
   });
   
-  app.get('/notes/paginate', async (req, res) => {
+  app.get('/todos/paginate', async (req, res) => {
     const query = req.query;
     const page = parseInt(query.page) || 1;
     const limit = parseInt(query.limit) || 10;
@@ -85,6 +87,6 @@ app.get('/notes', async (req, res) => {
     }
   });
 
-app.listen(3000, () => {
+app.listen(5000, () => {
     console.log("first")
 });

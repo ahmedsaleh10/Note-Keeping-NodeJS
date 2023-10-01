@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const connectDB = async () => {
   return await mongoose
-    .connect("mongodb+srv://ahmed:asaleh@mern.xtkoui0.mongodb.net/")
+    .connect("mongodb+srv://123sssaaalllh:asaleh@cluster0.d8cpyrg.mongodb.net/")
     .then((res) => {
       console.log("connectDB");
     })

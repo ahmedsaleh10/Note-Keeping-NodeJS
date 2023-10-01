@@ -2,14 +2,12 @@ const mongoose = require("mongoose");
 
 const noteSchema = new mongoose.Schema(
   {
-    title: String,
-    content: String,
-  },
-  {
-    timestamps: true,
+    text: String ,
+    day: String,
+    finished:Boolean,
   }
 );
 
-const Note = mongoose.model("Note", noteSchema);
+const Note = mongoose.model("todo", noteSchema);
 
-module.exports = {Note,noteSchema}
+module.exports = {Note}
